@@ -21,7 +21,6 @@
 #include <gazebo/common/Plugin.hh>
 #include <rclcpp/rclcpp.hpp>
 
-#include <autoware_auto_vehicle_msgs/msg/vehicle_control_command.hpp>
 #include <nav_msgs/msg/odometry.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <simulator_msgs/msg/control_command.hpp>
@@ -31,73 +30,71 @@
 namespace gokart_gazebo_plugin
 {
 
-class GokartGazeboPlugin : public gazebo::ModelPlugin
-{
-public:
-  GokartGazeboPlugin();
+  class GokartGazeboPlugin : public gazebo::ModelPlugin
+  {
+  public:
+    GokartGazeboPlugin();
 
-  void Load(gazebo::physics::ModelPtr model, sdf::ElementPtr sdf);
+    void Load(gazebo::physics::ModelPtr model, sdf::ElementPtr sdf);
 
-private:
-  void LoadParameters(sdf::ElementPtr sdf);
+  private:
+    void LoadParameters(sdf::ElementPtr sdf);
 
-  void Update();
+    void Update();
 
-  using ControlCommand = simulator_msgs::msg::ControlCommand;
-  using AutowareControlCommand = autoware_auto_vehicle_msgs::msg::VehicleControlCommand;
-  using Odometry = nav_msgs::msg::Odometry;
-  using JointState = sensor_msgs::msg::JointState;
+    using ControlCommand = simulator_msgs::msg::ControlCommand;
+    using Odometry = nav_msgs::msg::Odometry;
+    using JointState = sensor_msgs::msg::JointState;
 
-  std::string base_link_name_;
-  std::string map_frame_name_;
-  std::string fl_steering_joint_name_;
-  std::string fr_steering_joint_name_;
-  std::string fl_motor_joint_name_;
-  std::string fr_motor_joint_name_;
-  std::string rl_motor_joint_name_;
-  std::string rr_motor_joint_name_;
-  bool publish_ground_truth_transform_;
-  bool publish_joint_states_;
+    std::string base_link_name_;
+    std::string map_frame_name_;
+    std::string fl_steering_joint_name_;
+    std::string fr_steering_joint_name_;
+    std::string fl_motor_joint_name_;
+    std::string fr_motor_joint_name_;
+    std::string rl_motor_joint_name_;
+    std::string rr_motor_joint_name_;
+    bool publish_ground_truth_transform_;
+    bool publish_joint_states_;
 
-  gazebo::physics::WorldPtr world_;
-  gazebo::physics::ModelPtr model_;
-  gazebo::physics::LinkPtr base_link_;
-  gazebo::physics::LinkPtr rear_left_motor_link_;
-  gazebo::physics::LinkPtr rear_right_motor_link_;
+    gazebo::physics::WorldPtr world_;
+    gazebo::physics::ModelPtr model_;
+    gazebo::physics::LinkPtr base_link_;
+    gazebo::physics::LinkPtr rear_left_motor_link_;
+    gazebo::physics::LinkPtr rear_right_motor_link_;
 
-  gazebo::common::Time last_sim_time_;
-  gazebo::common::Time last_update_time_;
+    gazebo::common::Time last_sim_time_;
+    gazebo::common::Time last_update_time_;
 
-  gazebo::event::ConnectionPtr update_connection_;
+    gazebo::event::ConnectionPtr update_connection_;
 
-  gokart_gazebo_plugin::Joint front_left_steering = gokart_gazebo_plugin::Joint{};
-  gokart_gazebo_plugin::Joint front_right_steering = gokart_gazebo_plugin::Joint{};
-  gokart_gazebo_plugin::Joint front_left_motor = gokart_gazebo_plugin::Joint{};
-  gokart_gazebo_plugin::Joint front_right_motor = gokart_gazebo_plugin::Joint{};
-  gokart_gazebo_plugin::Joint rear_left_motor = gokart_gazebo_plugin::Joint{};
-  gokart_gazebo_plugin::Joint rear_right_motor = gokart_gazebo_plugin::Joint{};
+    gokart_gazebo_plugin::Joint front_left_steering = gokart_gazebo_plugin::Joint{};
+    gokart_gazebo_plugin::Joint front_right_steering = gokart_gazebo_plugin::Joint{};
+    gokart_gazebo_plugin::Joint front_left_motor = gokart_gazebo_plugin::Joint{};
+    gokart_gazebo_plugin::Joint front_right_motor = gokart_gazebo_plugin::Joint{};
+    gokart_gazebo_plugin::Joint rear_left_motor = gokart_gazebo_plugin::Joint{};
+    gokart_gazebo_plugin::Joint rear_right_motor = gokart_gazebo_plugin::Joint{};
 
-  double desired_steering_angle_;
-  double desired_velocity_;
-  JointState joint_state_msg_;
+    double desired_steering_angle_;
+    double desired_velocity_;
+    JointState joint_state_msg_;
 
-  double max_velocity_forward_ = 20;    // 20 mps = 72 kmph = 44.74 mph
-  double max_velocity_backward_ = -20;  // 20 mps = 72 kmph = 44.74 mph
-  double max_steering_angle_ = 0.6;     // 0.6 rad ~ 34 deg
+    double max_velocity_forward_ = 20;   // 20 mps = 72 kmph = 44.74 mph
+    double max_velocity_backward_ = -20; // 20 mps = 72 kmph = 44.74 mph
+    double max_steering_angle_ = 0.6;    // 0.6 rad ~ 34 deg
 
-  rclcpp::Node::SharedPtr ros_node_;
-  rclcpp::Subscription<ControlCommand>::SharedPtr control_command_sub_;
-  rclcpp::Subscription<AutowareControlCommand>::SharedPtr autoware_control_command_sub_;
-  rclcpp::Publisher<Odometry>::SharedPtr ground_truth_pub_;
-  rclcpp::Publisher<JointState>::SharedPtr joint_state_pub_;
+    rclcpp::Node::SharedPtr ros_node_;
+    rclcpp::Subscription<ControlCommand>::SharedPtr control_command_sub_;
+    rclcpp::Publisher<Odometry>::SharedPtr ground_truth_pub_;
+    rclcpp::Publisher<JointState>::SharedPtr joint_state_pub_;
 
-  geometry_msgs::msg::TransformStamped ground_truth_tf_pub_;
+    geometry_msgs::msg::TransformStamped ground_truth_tf_pub_;
 
-  std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
+    std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
 
-  Odometry ground_truth_msg_ = Odometry();
-};
+    Odometry ground_truth_msg_ = Odometry();
+  };
 
-}  // namespace gokart_gazebo_plugin
+} // namespace gokart_gazebo_plugin
 
-#endif  // SIMULATOR_GAZEBO_PLUGIN__GAZEBO_PLUGIN_HPP_
+#endif // SIMULATOR_GAZEBO_PLUGIN__GAZEBO_PLUGIN_HPP_
