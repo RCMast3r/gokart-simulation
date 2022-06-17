@@ -134,43 +134,18 @@ def generate_launch_description():
 
     declare_teleop_la = DeclareLaunchArgument(
         name="teleop",
-        default_value="none",
+        default_value="key",
         description="Start teleop tool. Allowed values: key, joy, none.",
     )
 
-    declare_start_joint_state_publisher_legacy_la = DeclareLaunchArgument(
-        name="start_joint_state_publisher_legacy",
-        default_value="false",
-        description=(
-            "Whether to start joint_state_publisher. Not needed anymore."
-            " simulator_gazebo_plugin publishes joint states by default (at the correct frequency)."
-            " Do NOT this use unless you set simulator_gazebo_plugin publishJointStates to false."
+    robot_model_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory("roar-gokart-urdf"),
+                "launch/state_publisher_no_rviz.launch.py",
+            )
         ),
     )
-
-    # Subscribe to the joint states of the robot, and publish the 3D pose of each link.
-    robot_state_publisher_node = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        parameters=[
-            config_abs_path,
-            {
-                "robot_description": Command(["xacro ", urdf_model_abs_path]),
-            },
-        ],
-    )
-
-    # Publish the joint states of the robot
-    # (needed only in case the simulation does not publish the joint state)
-    joint_state_publisher_node = Node(
-        condition=IfCondition(start_joint_state_publisher_legacy),
-        package="joint_state_publisher",
-        executable="joint_state_publisher",
-        parameters=[
-            config_abs_path,
-        ],
-    )
-
     # Start Gazebo server
     gazebo_server_ld = IncludeLaunchDescription(
         launch_description_source=PythonLaunchDescriptionSource(
@@ -296,15 +271,13 @@ def generate_launch_description():
     ld.add_action(declare_start_gzclient_la)
     ld.add_action(declare_start_map_sender_la)
     ld.add_action(declare_start_rviz_la)
-    ld.add_action(declare_start_joint_state_publisher_legacy_la)
     ld.add_action(declare_teleop_la)
 
     # Add any actions
     ld.add_action(gazebo_server_ld)
     ld.add_action(gazebo_client_ld)
     ld.add_action(map_sender_node)
-    ld.add_action(robot_state_publisher_node)
-    ld.add_action(joint_state_publisher_node)
+    ld.add_action(robot_model_node)
     ld.add_action(spawn_entity_node)
     ld.add_action(delayed_rviz_node)
     ld.add_action(key_teleop_node)
