@@ -19,6 +19,7 @@
   <exec_depend>simulator_gazebo_plugin</exec_depend>
   <exec_depend>key_teleop</exec_depend>
   <exec_depend>joy_teleop</exec_depend>
+  <exec_depend>velodyne_simulator</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

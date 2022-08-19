@@ -21,7 +21,7 @@
   <xacro:include filename="$(find simulator)/urdf/gokart/_ackermann.urdf" />
   <!-- <xacro:include filename="$(find simulator)/urdf/gokart/_gnss.urdf" /> -->
   <xacro:include filename="$(find simulator)/urdf/gokart/_imu.urdf" />
-  <xacro:include filename="$(find simulator)/urdf/gokart/_lidar_2d.urdf" />
+  <xacro:include filename="$(find simulator)/urdf/gokart/_lidar.urdf" />
   <xacro:include filename="$(find simulator)/urdf/gokart/_camera.urdf" />
 
 </robot>

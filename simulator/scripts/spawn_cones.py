@@ -92,7 +92,7 @@ class ConeSpawner(Node):
 
         # parameters (automatically updated via self.update_parameters())
         self.gnss_data_paths = []
-        self.distance_between_cones = 0.0
+        self.distance_between_cones = 5.0
         self.gnss_origin_point = [0, 0, 0]
 
         self.update_parameters([
@@ -197,7 +197,6 @@ class ConeSpawner(Node):
                        f'<pose>{position.x:.3f} {position.y:.3f} {position.z:.3f} 0 0 {yaw}</pose>' \
                        f'<name>cone_{name}_{idx}</name>' \
                        '</include>'
-
         xml += '</model>' \
                '</sdf>'
 
